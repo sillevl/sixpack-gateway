@@ -61,3 +61,22 @@ sudo systemctl enable systemd-networkd
 ```
 
 [More info](https://www.pragmaticlinux.com/2021/07/automatically-bring-up-a-socketcan-interface-on-boot/)
+
+## Using udev rules to assign same interface number at boot
+
+`/etc/udev/rules.d/75-can.rules`
+
+```text
+SUBSYSTEM!="net", GOTO="my_can_end"
+ACTION!="add", GOTO="my_can_end"
+
+DEVPATH=="/devices/platform/soc/fe204000.spi/spi_master/spi0/spi0.0/net/can?", ATTR{id}="SPI0", ENV{SPI}="0", NAME="can0"
+DEVPATH=="/devices/platform/soc/fe215080.spi/spi_master/spi1/spi1.0/net/can?", ATTR{id}="SPI1", ENV{SPI}="1", NAME="can1"
+
+LABEL="my_can_end"
+```
+[More info](https://raspberrypi.stackexchange.com/questions/76370/link-spidev-and-can-device)
+
+`udevadm info -ap $(udevadm info -q path -p /sys/class/net/can0)`
+
+`udevadm info -ap $(udevadm info -q path -p /sys/class/net/can1)`
