@@ -40,6 +40,28 @@ Check with `dmesg | grep spi`:
 [    5.425099] mcp251x spi0.0 can0: MCP2515 successfully initialized.
 ```
 
+### SPHA - Gateway
+
+`/boot/config.txt`
+```text
+dtparam=spi=on
+dtoverlay=spi0-2cs,cs0_pin=8,cs1_pin=7
+dtoverlay=spi1-2cs,cs0_pin=18,cs1_pin=17
+dtoverlay=mcp2515,spi0-0,oscillator=12000000,interrupt=23,spimaxfrequency=2000000
+dtoverlay=mcp2515,spi0-1,oscillator=12000000,interrupt=22,spimaxfrequency=2000000
+dtoverlay=mcp2515,spi1-0,oscillator=12000000,interrupt=25,spimaxfrequency=2000000
+dtoverlay=mcp2515,spi1-1,oscillator=12000000,interrupt=24,spimaxfrequency=2000000
+```
+
+Check with `dmesg | grep spi`:
+
+```text
+[    7.157511] mcp251x spi0.1 can0: MCP2515 successfully initialized.
+[    7.173238] mcp251x spi0.0 can1: MCP2515 successfully initialized.
+[    7.189643] mcp251x spi1.1 can2: MCP2515 successfully initialized.
+[    7.202660] mcp251x spi1.0 can3: MCP2515 successfully initialized.
+```
+
 ## Automatically bringing can networks up
 
 Bring one or more can interfaces up at boot with `systemd-networkd`
