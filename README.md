@@ -70,11 +70,11 @@ Bring one or more can interfaces up at boot with `systemd-networkd`
 
 ```text
 [Match]
-Name=can0 can1
+Name=spha*
 
 [CAN]
 BitRate=500K
-RestartSec=100ms
+#RestartSec=100ms
 ```
 
 ```shell
@@ -89,13 +89,10 @@ sudo systemctl enable systemd-networkd
 `/etc/udev/rules.d/75-can.rules`
 
 ```text
-SUBSYSTEM!="net", GOTO="my_can_end"
-ACTION!="add", GOTO="my_can_end"
-
-DEVPATH=="/devices/platform/soc/fe204000.spi/spi_master/spi0/spi0.0/net/can?", ATTR{id}="SPI0", ENV{SPI}="0", NAME="can0"
-DEVPATH=="/devices/platform/soc/fe215080.spi/spi_master/spi1/spi1.0/net/can?", ATTR{id}="SPI1", ENV{SPI}="1", NAME="can1"
-
-LABEL="my_can_end"
+ACTION=="add", SUBSYSTEM=="net", DEVPATH=="/devices/platform/soc/*/spi0.0/net/can?", NAME="spha0", ATTR{tx_queue_len}="65536"
+ACTION=="add", SUBSYSTEM=="net", DEVPATH=="/devices/platform/soc/*/spi0.1/net/can?", NAME="spha1", ATTR{tx_queue_len}="65536"
+ACTION=="add", SUBSYSTEM=="net", DEVPATH=="/devices/platform/soc/*/spi1.1/net/can?", NAME="spha2", ATTR{tx_queue_len}="65536"
+ACTION=="add", SUBSYSTEM=="net", DEVPATH=="/devices/platform/soc/*/spi1.0/net/can?", NAME="spha3", ATTR{tx_queue_len}="65536"
 ```
 [More info](https://raspberrypi.stackexchange.com/questions/76370/link-spidev-and-can-device)
 
